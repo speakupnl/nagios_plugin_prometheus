@@ -52,5 +52,6 @@ Nagios/Icinga plugin for alerting on Prometheus query results.
                             A name for the metric being checked, default:
                             prometheus
       -I, --ignorenan       Ignore NaN results
+      -k, --insecure        Allow insecure connections
       -v, --verbose         Increase output verbosity (use up to 3 times)
 
