@@ -12,9 +12,11 @@ import argparse
 import logging
 import nagiosplugin
 import json
+import urllib3
 
 _log = logging.getLogger('nagiosplugin')
 
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Data acquisition.
 
@@ -37,7 +39,8 @@ class Prometheus(nagiosplugin.Resource):
         try:
             query_output = requests.get(
                 self.args.url, params={'query': self.args.query}, 
-                auth=(self.args.username, self.args.password))
+                auth=(self.args.username, self.args.password),
+                verify=(not self.args.insecure))
         except requests.exceptions.RequestException as e:
             raise ValueError("Unable to connect to Prometheus server at: '{}'\n"
                              "With Exception: {}".format(self.args.url, e))
@@ -168,6 +171,9 @@ def main():
     parser.add_argument(
         '-I', '--ignorenan', action='store_true',
         help='Ignore NaN results')
+    parser.add_argument(
+        '-k', '--insecure', action='store_true',
+        help='Allow insecure connections')
     parser.add_argument(
         '-v', '--verbose', action='count', default=0,
         help='Increase output verbosity (use up to 3 times)')
